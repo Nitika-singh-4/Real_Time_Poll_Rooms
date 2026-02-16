@@ -1,4 +1,4 @@
-const Poll  = require('../models/Poll');
+const Poll  = require('../models/poll.js');
 const {v4: uuidv4} = require('uuid');
 
 exports.createPoll = async (req, res) => {
