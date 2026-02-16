@@ -26,7 +26,7 @@ function PollRoom() {
   const fetchPoll = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/polls/${roomId}`
+        `https://real-time-poll-rooms-l2by.onrender.com/api/polls/${roomId}`
       );
       setPoll(response.data);
     } catch (error) {
@@ -44,7 +44,7 @@ function PollRoom() {
       }
 
       await axios.post(
-        `http://localhost:5000/api/polls/${roomId}/vote`,
+        `https://real-time-poll-rooms-l2by.onrender.com/api/polls/${roomId}/vote`,
         {
           optionIndex: index,
           fingerprint,
