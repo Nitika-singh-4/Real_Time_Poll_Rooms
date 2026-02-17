@@ -56,10 +56,13 @@ const handleSubmit = async (e) => {
       response.data.poll?.roomId ||
       response.data._id;
 
+    const pollData = response.data.poll;
+
     console.log('[CREATE POLL] Room ID extracted:', roomId);
 
     if (roomId) {
-      navigate(`/poll/${roomId}`);
+      // Pass poll data to avoid fetching again
+      navigate(`/poll/${roomId}`, { state: { pollData } });
     } else {
       console.error('[CREATE POLL] No room ID in response:', response.data);
       alert("Poll created but room ID not found.");

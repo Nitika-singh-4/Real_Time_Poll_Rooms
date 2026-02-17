@@ -25,7 +25,11 @@ exports.createPoll = async (req, res) => {
         
         await newPoll.save();
         console.log('[CREATE POLL] Poll created successfully:', newPoll.roomId);
-        res.status(201).json({message: "Poll created successfully", roomId: newPoll.roomId});
+        res.status(201).json({
+            message: "Poll created successfully", 
+            roomId: newPoll.roomId,
+            poll: newPoll
+        });
     } catch (error) {
         console.error('[CREATE POLL] Error:', error.message);
         console.error('[CREATE POLL] Stack trace:', error.stack);

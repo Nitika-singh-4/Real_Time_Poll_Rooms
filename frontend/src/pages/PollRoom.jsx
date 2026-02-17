@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket";
 import { v4 as uuidv4 } from "uuid";
 
 function PollRoom() {
   const { roomId } = useParams();
-  const [poll, setPoll] = useState(null);
+  const location = useLocation();
+  const [poll, setPoll] = useState(location.state?.pollData || null);
   const [hasVoted, setHasVoted] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!location.state?.pollData);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchPoll();
+    // Only fetch if we don't already have poll data from navigation
+    if (!location.state?.pollData) {
+      fetchPoll();
+    }
 
     socket.emit("joinRoom", roomId);
 
