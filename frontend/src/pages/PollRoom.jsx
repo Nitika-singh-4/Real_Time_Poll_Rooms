@@ -9,6 +9,8 @@ function PollRoom() {
   const [poll, setPoll] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetchPoll();
@@ -26,6 +28,8 @@ function PollRoom() {
 
   const fetchPoll = async () => {
     try {
+      setLoading(true);
+      setError(false);
       console.log('[FETCH POLL] Fetching poll:', roomId);
       
       const response = await axios.get(
@@ -34,12 +38,15 @@ function PollRoom() {
       
       console.log('[FETCH POLL] Poll data received:', response.data);
       setPoll(response.data);
+      setLoading(false);
     } catch (error) {
       console.error('[FETCH POLL] Error occurred');
       console.error('[FETCH POLL] Error message:', error.message);
       console.error('[FETCH POLL] Response data:', error.response?.data);
       console.error('[FETCH POLL] Response status:', error.response?.status);
       console.error('[FETCH POLL] Full error:', error);
+      setError(true);
+      setLoading(false);
     }
   };
 
@@ -78,7 +85,25 @@ function PollRoom() {
     }
   };
 
-  if (!poll) {
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+        <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-green-700 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-slate-800 mb-2">
+            Loading Poll...
+          </h2>
+          <p className="text-slate-500">
+            Please wait while we fetch the poll data
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state - poll not found
+  if (error || !poll) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
         <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full">
