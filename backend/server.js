@@ -7,6 +7,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 dotenv.config();
+
+console.log('[SERVER] Connecting to database...');
 connectDB();
 
 const app = express();
@@ -33,20 +35,24 @@ app.get("/", (req, res) => {
 
 // Socket connection logic
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("[SOCKET] User connected:", socket.id);
 
   socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
-    console.log(`Socket joined room: ${roomId}`);
+    console.log(`[SOCKET] Socket ${socket.id} joined room: ${roomId}`);
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("[SOCKET] User disconnected:", socket.id);
   });
 });
 
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log('\n=================================');
+  console.log('[SERVER] ✓ Server is running');
+  console.log(`[SERVER] Port: ${PORT}`);
+  console.log('[SERVER] Environment:', process.env.NODE_ENV || 'development');
+  console.log('=================================\n');
 });

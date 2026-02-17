@@ -26,12 +26,20 @@ function PollRoom() {
 
   const fetchPoll = async () => {
     try {
+      console.log('[FETCH POLL] Fetching poll:', roomId);
+      
       const response = await axios.get(
         `https://real-time-poll-rooms-l2by.onrender.com/api/polls/${roomId}`
       );
+      
+      console.log('[FETCH POLL] Poll data received:', response.data);
       setPoll(response.data);
     } catch (error) {
-      console.error("Poll not found");
+      console.error('[FETCH POLL] Error occurred');
+      console.error('[FETCH POLL] Error message:', error.message);
+      console.error('[FETCH POLL] Response data:', error.response?.data);
+      console.error('[FETCH POLL] Response status:', error.response?.status);
+      console.error('[FETCH POLL] Full error:', error);
     }
   };
 
@@ -42,9 +50,14 @@ function PollRoom() {
       if (!fingerprint) {
         fingerprint = uuidv4();
         localStorage.setItem("fingerprint", fingerprint);
+        console.log('[VOTE] New fingerprint generated:', fingerprint);
+      } else {
+        console.log('[VOTE] Using existing fingerprint:', fingerprint);
       }
 
-      await axios.post(
+      console.log('[VOTE] Submitting vote:', { roomId, optionIndex: index, fingerprint });
+
+      const response = await axios.post(
         `https://real-time-poll-rooms-l2by.onrender.com/api/polls/${roomId}/vote`,
         {
           optionIndex: index,
@@ -52,9 +65,15 @@ function PollRoom() {
         }
       );
 
+      console.log('[VOTE] Vote successful:', response.data);
       setSelectedIndex(index);
       setHasVoted(true);
     } catch (error) {
+      console.error('[VOTE] Error occurred');
+      console.error('[VOTE] Error message:', error.message);
+      console.error('[VOTE] Response data:', error.response?.data);
+      console.error('[VOTE] Response status:', error.response?.status);
+      console.error('[VOTE] Full error:', error);
       alert(error.response?.data?.message || "Voting failed");
     }
   };

@@ -4,8 +4,7 @@ const optionSchema = new mongoose.Schema({
     votes: {type: Number, default: 0}
 });
 const voterSchema = new mongoose.Schema({
-ip: String,
-fingerprint: String
+    fingerprint: {type: String, required: true}
 });
 const pollSchema = new mongoose.Schema({
     roomId: {type: String, required: true, unique: true},

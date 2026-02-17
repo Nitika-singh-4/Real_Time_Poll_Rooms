@@ -35,6 +35,12 @@ const handleSubmit = async (e) => {
   }
 
   try {
+    console.log('[CREATE POLL] Sending request:', {
+      question: question.trim(),
+      options: filteredOptions,
+      optionsCount: filteredOptions.length
+    });
+    
     const response = await axios.post(
       "https://real-time-poll-rooms-l2by.onrender.com/api/polls",
       {
@@ -43,23 +49,28 @@ const handleSubmit = async (e) => {
       }
     );
 
-    console.log("Poll created successfully:", response.data);
+    console.log('[CREATE POLL] Response received:', response.data);
 
     const roomId =
       response.data.roomId ||
       response.data.poll?.roomId ||
       response.data._id;
 
-    console.log("Room ID:", roomId);
+    console.log('[CREATE POLL] Room ID extracted:', roomId);
 
     if (roomId) {
       navigate(`/poll/${roomId}`);
     } else {
+      console.error('[CREATE POLL] No room ID in response:', response.data);
       alert("Poll created but room ID not found.");
     }
   } catch (error) {
-    console.error("Error creating poll:", error);
-    alert("Error creating poll");
+    console.error('[CREATE POLL] Error occurred');
+    console.error('[CREATE POLL] Error message:', error.message);
+    console.error('[CREATE POLL] Response data:', error.response?.data);
+    console.error('[CREATE POLL] Response status:', error.response?.status);
+    console.error('[CREATE POLL] Full error:', error);
+    alert(`Error creating poll: ${error.response?.data?.message || error.message}`);
   }
 };
 
