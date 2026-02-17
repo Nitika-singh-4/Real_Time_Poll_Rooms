@@ -1,10 +1,10 @@
-# 📊 Real-Time Poll Rooms
+#  Real-Time Poll Rooms
 
 A full-stack web application that allows users to create polls, share them via a link, and collect votes with real-time result updates across all viewers.
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 
 **Frontend (Vercel):**  
 https://real-time-poll-rooms-pink.vercel.app/ 
@@ -14,7 +14,7 @@ https://real-time-poll-rooms-l2by.onrender.com
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Frontend
 - React (Vite)
@@ -35,23 +35,23 @@ https://real-time-poll-rooms-l2by.onrender.com
 
 ---
 
-# ✅ Features Implemented
+#  Features Implemented
 
-## 1️⃣ Poll Creation
+## 1️ Poll Creation
 - Create poll with a question and at least 2 options
 - Frontend + backend validation
 - Automatically generates unique shareable link
 
 ---
 
-## 2️⃣ Join by Link
+## 2️ Join by Link
 - Anyone with the link can access the poll
 - Single-choice voting
 - Clean error handling for invalid poll IDs
 
 ---
 
-## 3️⃣ Real-Time Results
+## 3️ Real-Time Results
 - Implemented using **Socket.io**
 - Users join a socket room based on poll ID
 - When a vote is cast:
@@ -62,13 +62,13 @@ https://real-time-poll-rooms-l2by.onrender.com
 
 ---
 
-## 4️⃣ Fairness / Anti-Abuse Mechanisms
+## 4️ Fairness / Anti-Abuse Mechanisms
 
 To reduce repeated or abusive voting, two layered mechanisms were implemented:
 
 ---
 
-### 🔒 Mechanism 1: Device-Based Fingerprint (Browser-Level Restriction)
+###  Mechanism 1: Device-Based Fingerprint (Browser-Level Restriction)
 
 - A unique UUID is generated and stored in `localStorage`
 - This fingerprint is sent with each vote request
@@ -84,7 +84,7 @@ To reduce repeated or abusive voting, two layered mechanisms were implemented:
 
 ---
 
-### 🌐 Mechanism 2: IP Address Tracking (Server-Side Restriction)
+###  Mechanism 2: IP Address Tracking (Server-Side Restriction)
 
 - Backend extracts the client IP address
 - Each poll stores voted IP addresses
@@ -107,7 +107,7 @@ While not foolproof (since authentication was not required), it significantly re
 
 ---
 
-## 5️⃣ Persistence
+## 5️ Persistence
 
 - Polls and votes are stored in MongoDB
 - Refreshing the page does not lose data
@@ -129,7 +129,7 @@ While not foolproof (since authentication was not required), it significantly re
 
 ---
 
-# 📌 Known Limitations
+#  Known Limitations
 
 - IP-based restriction may block users on shared networks
 - Fingerprint can be bypassed using incognito mode
@@ -139,7 +139,7 @@ While not foolproof (since authentication was not required), it significantly re
 
 ---
 
-# 🔮 Future Improvements
+#  Future Improvements
 
 If extended further, the system could include:
 
@@ -152,7 +152,7 @@ If extended further, the system could include:
 
 ---
 
-# 🧠 Design Decisions
+#  Design Decisions
 
 - Chose **Socket.io** for efficient real-time bidirectional communication.
 - Kept architecture simple and modular.
@@ -161,7 +161,7 @@ If extended further, the system could include:
 
 ---
 
-# 🏁 Conclusion
+#  Conclusion
 
 This project fulfills all required success criteria:
 
