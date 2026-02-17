@@ -62,48 +62,58 @@ https://real-time-poll-rooms-l2by.onrender.com
 
 ---
 
-## 4️ Fairness / Anti-Abuse Mechanisms
+## 4️⃣ Fairness / Anti-Abuse Mechanisms
 
 To reduce repeated or abusive voting, two layered mechanisms were implemented:
 
 ---
 
-###  Mechanism 1: Device-Based Fingerprint (Browser-Level Restriction)
+### 🔒 Mechanism 1: Device-Based Fingerprint (Client-Side Restriction)
 
-- A unique UUID is generated and stored in `localStorage`
+- A unique UUID is generated and stored in `localStorage` when a user first votes
 - This fingerprint is sent with each vote request
-- Backend checks whether that fingerprint has already voted
+- Backend checks whether that fingerprint has already voted in this poll
+- Prevents the same browser from voting multiple times
 
-**Prevents:**
-- Multiple votes from the same browser
+**What it prevents:**
+- Multiple votes from the same browser/device
 - Refresh-based vote spamming
+- Casual duplicate voting attempts
 
 **Limitations:**
-- Incognito mode resets localStorage
+- Incognito/private mode creates a new fingerprint (new localStorage)
 - Clearing browser storage bypasses this restriction
+- Different browsers on the same device are treated as different users
 
 ---
 
-###  Mechanism 2: IP Address Tracking (Server-Side Restriction)
+### ⏱️ Mechanism 2: Rate Limiting (Server-Side Restriction)
 
-- Backend extracts the client IP address
-- Each poll stores voted IP addresses
-- If the same IP attempts to vote again, the request is rejected
+- Express rate limiter applied to the voting endpoint
+- Limits: **5 vote attempts per IP address within 15 minutes**
+- Prevents rapid-fire voting attempts from the same network
+- Returns error message: "Too many vote attempts. Please try again later."
 
-**Prevents:**
-- Multiple votes from the same network
-- Basic spam attempts
+**What it prevents:**
+- Automated voting bots
+- Rapid spam attempts from the same IP
+- Malicious users trying to skew results quickly
+- Prevents abuse even if localStorage is cleared repeatedly
 
 **Limitations:**
-- Shared networks (e.g., college WiFi) may block multiple legitimate users
-- VPN usage can bypass restriction
+- Shared networks (e.g., college WiFi, offices) may hit rate limit affecting legitimate users
+- VPN usage can bypass IP-based rate limiting
+- Does not prevent slow, manual abuse attempts spread over time
 
 ---
 
-### Fairness Design Philosophy
+### 🛡️ Combined Defense Strategy
 
-This project uses a **layered anti-abuse strategy**, combining device-level and network-level restrictions.  
-While not foolproof (since authentication was not required), it significantly reduces casual abuse without introducing unnecessary complexity.
+These two mechanisms work together:
+1. **Fingerprint** stops casual, accidental duplicate votes
+2. **Rate limiting** stops automated/rapid abuse attempts
+
+This layered approach significantly reduces voting abuse without requiring user authentication, while maintaining a frictionless voting experience.
 
 ---
 
@@ -116,39 +126,47 @@ While not foolproof (since authentication was not required), it significantly re
 
 ---
 
-# ⚠ Edge Cases Handled
+# ⚠️ Edge Cases Handled
 
-- Poll not found (invalid room ID)
-- Empty question submission blocked
-- Less than 2 valid options prevented
-- Empty options filtered before submission
-- Invalid option index handled
-- Duplicate vote attempt blocked
-- Real-time reconnection handled gracefully
-- Deployment routing fixed for direct `/poll/:id` access
-
----
-
-#  Known Limitations
-
-- IP-based restriction may block users on shared networks
-- Fingerprint can be bypassed using incognito mode
-- No authentication system implemented
-- No poll expiration or deletion feature
-- No admin moderation system
+- **Poll not found** - Invalid room ID returns proper error message
+- **Empty question** - Submission blocked with validation error
+- **Less than 2 valid options** - Prevented at frontend and backend
+- **Empty options** - Filtered before submission
+- **Invalid option index** - Backend validates index bounds
+- **Duplicate vote attempt** - Blocked by fingerprint check
+- **Rate limit exceeded** - Clear error message returned
+- **Real-time disconnection** - Socket.io handles reconnection gracefully
+- **Direct URL access** - Deployment routing fixed for `/poll/:id` paths
+- **Missing fingerprint** - Generated on first vote attempt
 
 ---
 
-#  Future Improvements
+# 🚧 Known Limitations
+
+- **Fingerprint bypass** - Incognito mode or clearing localStorage creates new fingerprint
+- **Rate limit on shared networks** - Legitimate users on same IP may be blocked after 5 votes
+- **VPN usage** - Can bypass rate limiting by changing IP
+- **No authentication** - Anyone with the link can vote (intentional for simplicity)
+- **No poll expiration** - Polls remain active indefinitely
+- **No poll deletion** - No admin controls to remove polls
+- **No user identity tracking** - Cannot show "You voted for X" after page refresh
+
+---
+
+# 🚀 Future Improvements
 
 If extended further, the system could include:
 
-- Optional authentication (email or OAuth)
-- Poll expiration timers
-- Rate limiting instead of strict IP blocking
-- Admin controls for poll creators
-- Analytics dashboard
-- Improved mobile UX animations
+- **Optional authentication** - Email or OAuth for verified voting
+- **Poll expiration timers** - Auto-close polls after specified time
+- **Dynamic rate limiting** - Adjust limits based on poll popularity
+- **Poll creator dashboard** - Manage and delete their polls
+- **Analytics** - Detailed voting patterns and demographics
+- **Multi-choice polls** - Allow voting for multiple options
+- **Anonymous vs verified modes** - Toggle between public/private polls
+- **Better mobile UX** - Enhanced animations and touch interactions
+- **Export results** - Download poll data as CSV/PDF
+- **Poll templates** - Pre-built question formats
 
 ---
 
