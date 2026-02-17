@@ -38,7 +38,6 @@ function PollRoom() {
       
       console.log('[FETCH POLL] Poll data received:', response.data);
       setPoll(response.data);
-      setLoading(false);
     } catch (error) {
       console.error('[FETCH POLL] Error occurred');
       console.error('[FETCH POLL] Error message:', error.message);
@@ -46,6 +45,7 @@ function PollRoom() {
       console.error('[FETCH POLL] Response status:', error.response?.status);
       console.error('[FETCH POLL] Full error:', error);
       setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -102,8 +102,8 @@ function PollRoom() {
     );
   }
 
-  // Error state - poll not found
-  if (error || !poll) {
+  // Error state - poll not found (only show when NOT loading)
+  if (!loading && (error || !poll)) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
         <div className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full">
