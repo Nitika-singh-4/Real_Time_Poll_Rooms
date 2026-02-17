@@ -17,22 +17,20 @@ function CreatePoll() {
     setOptions([...options, ""]);
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Remove empty options
   const filteredOptions = options
-    .map(opt => opt.trim())
-    .filter(opt => opt !== "");
-
-  // Validation: At least 2 non-empty options
-  if (filteredOptions.length < 2) {
-    alert("Please provide at least 2 valid options.");
-    return;
-  }
+    .map((opt) => opt.trim())
+    .filter((opt) => opt !== "");
 
   if (question.trim() === "") {
     alert("Question cannot be empty.");
+    return;
+  }
+
+  if (filteredOptions.length < 2) {
+    alert("Please provide at least 2 valid options.");
     return;
   }
 
@@ -45,56 +43,85 @@ function CreatePoll() {
       }
     );
 
-    navigate(`/poll/${response.data.roomId}`);
+    console.log("Poll created successfully:", response.data);
 
+    const roomId =
+      response.data.roomId ||
+      response.data.poll?.roomId ||
+      response.data._id;
+
+    console.log("Room ID:", roomId);
+
+    if (roomId) {
+      navigate(`/poll/${roomId}`);
+    } else {
+      alert("Poll created but room ID not found.");
+    }
   } catch (error) {
+    console.error("Error creating poll:", error);
     alert("Error creating poll");
   }
 };
 
-
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Create a Poll
-        </h2>
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-slate-800 mb-2">
+            Create a Poll
+          </h2>
+          <p className="text-slate-500">Share your question with the world</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Enter your question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            required
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          {options.map((option, index) => (
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Question input */}
+          <div>
+            <label className="block text-sm font-medium text-slate-800 mb-2">
+              Your Question
+            </label>
             <input
-              key={index}
               type="text"
-              placeholder={`Option ${index + 1}`}
-              value={option}
-              onChange={(e) =>
-                handleOptionChange(index, e.target.value)
-              }
+              placeholder="What's on your mind?"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
               required
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700 focus:border-transparent transition-all text-slate-800"
             />
-          ))}
+          </div>
 
+          {/* Options */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-slate-800 mb-2">
+              Options
+            </label>
+            {options.map((option, index) => (
+              <input
+                key={index}
+                type="text"
+                placeholder={`Option ${index + 1}`}
+                value={option}
+                onChange={(e) =>
+                  handleOptionChange(index, e.target.value)
+                }
+                className="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700 focus:border-transparent transition-all text-slate-800"
+              />
+            ))}
+          </div>
+
+          {/* Add option button */}
           <button
             type="button"
             onClick={addOption}
-            className="text-blue-600 text-sm hover:underline"
+            className="w-full border border-slate-300 rounded-lg py-3 text-slate-800 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
           >
-            + Add Option
+            <span>+</span>
+            <span>Add Another Option</span>
           </button>
 
+          {/* Submit button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-green-700 text-white py-3 rounded-lg font-semibold hover:bg-green-800 transition-all active:scale-[0.99]"
           >
             Create Poll
           </button>
